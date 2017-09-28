@@ -3,32 +3,36 @@
 
 var ctx;
 var canvas;
+var ships;
+
+var DirectionEnum = {
+                        UP:1,
+                        DOWN:2,
+                        LEFT:3,
+                        RIGHT:4,
+                        NONE:0
+                    }
 
 $(document).ready(function(){
+
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext('2d');
-    console.log(ctx)
 
-    // Board.drawTile(0,0)
-    // Board.drawTile(170,0)
+    canvas.width = $(window).width()
+    canvas.height = document.documentElement.clientHeight
+
+
     Board.drawBoard(3,3)
-    //Board.drawImage('images/earth_flag.png')
-    var player = Player.create()
-    var ship1 = Ship.create('rgb(255,0,0)', [0,0], 5)
-    var ship2 = Ship.create('rgb(255,0,0)', [4,5], 3)
-    var ship3 = Ship.create('rgb(255,0,0)', [3,2], 1)
-    var ship4 = Ship.create('rgb(255,0,0)', [2,0], 2)
-    var ship5 = Ship.create('rgb(255,0,0)', [0,5], 4)
-    var ship6 = Ship.create('rgb(255,0,0)', [7,8], 6)
 
-    ctx.fillStyle = 'rgba(255,0,0,0.5)'
-    ctx.fillRect(500, 0, 100, 50)
-
-    canvas.addEventListener('mousedown', function (e) {
-        if(Inputs.isInside(e.clientX, e.clientY, 500, 0, 100, 50)) {
-            ship6.move([ship6.position[0]-1, ship6.position[1]])
-        }
-    })
+    ships = [
+                    Ship.create('rgb(255,0,0)', [0,0], 5),
+                    Ship.create('rgb(255,0,0)', [4,5], 3),
+                    Ship.create('rgb(255,0,0)', [3,2], 1),
+                    Ship.create('rgb(255,0,0)', [2,1], 2),
+                    Ship.create('rgb(255,0,0)', [0,5], 4),
+                    Ship.create('rgb(255,0,0)', [7,8], 6)
+                ]
+   
 });
 
 var Board = function () {
@@ -97,10 +101,11 @@ var Inputs = function () {
 
     var exports = {}
 
+    var margin = 8      //the default margin/padding around the canvas in chrome
     exports.isInside = function (x, y, destX, destY, width, height) {
-        return (e.clientX >= destX && e.clientX <= destX+width
-                    && e.clientY >= destY && e.clientY <= destY+height)
+        return (x-margin >= destX && x-margin <= destX+width
+                    && y-margin >= destY && y-margin <= destY+height)
     }
 
     return exports
-}
+}();
