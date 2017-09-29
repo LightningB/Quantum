@@ -147,7 +147,7 @@ var Ship = function () {
         canvas.addEventListener('mousedown', function (e) {
 
             var i
-            for(i = 0; i < 6; i++) {
+            for(i = 0; i < 1; i++) {    //1 should be 6, just testing
                 var curr = ships[i]
                 if(Inputs.isInside(e.clientX, e.clientY, curr.pixel_position[0], curr.pixel_position[1], 38, 38)) {
                     switch (curr.isArrow()) {
