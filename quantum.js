@@ -13,6 +13,13 @@ var DirectionEnum = {
                         NONE:0
                     }
 
+var spaceSize = 50
+var tileSeparation = 10
+var innerSquarePadding = 1
+
+var tileColours = ['rgb(30, 144, 255)', 'rgb(0, 191, 255)']
+
+
 $(document).ready(function(){
 
     canvas = document.getElementById("canvas");
@@ -26,11 +33,11 @@ $(document).ready(function(){
 
     ships = [
                     Ship.create('rgb(255,0,0)', [0,0], 5),
-                    Ship.create('rgb(255,0,0)', [4,5], 3),
+                    /*Ship.create('rgb(255,0,0)', [4,5], 3),
                     Ship.create('rgb(255,0,0)', [3,2], 1),
                     Ship.create('rgb(255,0,0)', [2,1], 2),
                     Ship.create('rgb(255,0,0)', [0,5], 4),
-                    Ship.create('rgb(255,0,0)', [7,8], 6)
+                    Ship.create('rgb(255,0,0)', [7,8], 6)*/
                 ]
    
 });
@@ -39,7 +46,14 @@ var Board = function () {
 
     var exports = {}
 
-    exports.drawTile = function(x,y) {
+    exports.drawSpace = function(tilePosition, spacePixelPosition) {
+
+        ctx.fillStyle = tileColours[(tilePosition[0] + tilePosition[1])%2]
+        ctx.fillRect(spacePixelPosition[0], spacePixelPosition[1], spaceSize, spaceSize)
+    
+    }
+
+    exports.drawTile = function(tilePosition) {
 
         var colours = ['rgb(30, 144, 255)', 'rgb(0, 191, 255)']
 
@@ -49,17 +63,22 @@ var Board = function () {
             var j;
             for(j = 0; j < 3; j++) {
 
-                    ctx.fillStyle = colours[(i+j)%2]
-                    ctx.fillRect(x+i*50, y+j*50, 50, 50)
+                    var tilePixelPosition = [(spaceSize*3 /*tileWidth*/ + /*padding*/tileSeparation)*tilePosition[0], (spaceSize*3+tileSeparation)*tilePosition[1]]
 
-                if(i !== 1 || j !== 1) {
+                    var spacePosition = [tilePixelPosition[0] + i, tilePixelPosition[1] + j]
+                    var spacePixelPosition = [tilePixelPosition[0] + i*spaceSize, tilePixelPosition[1] + j*spaceSize]
+
+                    this.drawSpace([i,j], spacePixelPosition)
+
+                if((i+j)%2 === 1) {
 
                     ctx.strokeStyle = 'rgb(255,255,255)'
                     ctx.lineWidth = 2
-                    ctx.strokeRect(x+i*50 + 5, y+j*50 + 5, 40, 40)
+                    ctx.strokeRect(spacePixelPosition[0] + 5, spacePixelPosition[1] + 5, 40, 40)
 
-                } else {
-                    this.drawImage('images/minimalist planet.jpg', x+i*50, y+j*50, 2, 50, 50)
+                } 
+                if(i === 1 && j === 1){
+                    this.drawImage('images/minimalist planet.jpg', tilePixelPosition[0]+i*spaceSize, tilePixelPosition[1]+j*spaceSize, 2, spaceSize, spaceSize)
                 }
             }
         }
@@ -89,7 +108,8 @@ var Board = function () {
         for(i = 0; i < n; i++) {
             var j;
             for(j = 0; j < m; j++) {
-                Board.drawTile((150 /*tileWidth*/ + /*padding*/20)*i, (150+20)*j)
+                //Board.drawTile((spaceSize*3 /*tileWidth*/ + /*padding*/tileSeparation)*i, (spaceSize*3+tileSeparation)*j)
+                Board.drawTile([i, j])
             }
         }
     }

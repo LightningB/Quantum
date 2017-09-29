@@ -4,22 +4,39 @@ var Ship = function () {
 
     var arrowPoint = 17
     var arrowSize = 7
+    var paddingSize = 2
+    var shipSize = 38
 
     var ship = function (colour, position, type) {
         this.type = type
         this.position = position //2 length int array
-        this.pixel_position = [position[0]*50 + 6 + 20*Math.floor(position[0]/3),
-                                position[1]*50 + 6 + 20*Math.floor(position[1]/3)]
+        this.calculate_pixel_position()
         this.colour = colour
+    }
+
+    ship.prototype.calculate_pixel_position = function () {
+         this.pixel_position = [this.position[0]*spaceSize + 6 + tileSeparation*Math.floor(this.position[0]/3),
+                                    this.position[1]*spaceSize + 6 + tileSeparation*Math.floor(this.position[1]/3)]
     }
 
     ship.prototype.move = function (position) {
 
-        Board.drawTile(this.position[0], this.position[1])
-        this.position = position;
-        this.pixel_position = [this.position[0]*50 + 6 + 20*Math.floor(this.position[0]/3),
-                                this.position[1]*50 + 6 + 20*Math.floor(this.position[1]/3)]
-        this.draw()
+        if(position[0] >= 0 && position[0] < 9 
+                && position[1] >= 0 && position[1] < 9) {
+
+            //also test for centre tile spaces (planets)
+            
+            //need to find a way to redraw tile on move (or another way of erasing previous ship drawing)
+            Board.drawSpace(placeholder)
+            //-----------------------------------
+
+            this.position = position;
+            this.calculate_pixel_position()
+            this.draw()
+
+            console.log(this.position)
+            console.log(this.pixel_position)
+        }
 
     }
 
@@ -79,12 +96,14 @@ var Ship = function () {
         ctx.restore()
     }
 
-    ship.prototype.drawArrows = function () {
+    ship.prototype.drawArrows = function (colour) {
         ctx.save()
         ctx.translate(this.pixel_position[0] + 19 /*ship centre offset*/,
             this.pixel_position[1] + 19)
 
-        ctx.fillStyle = 'rgba(0,0,0,0.5)'
+        if(colour === undefined) { colour = 'rgba(0,0,0,0.5)'}
+        
+        ctx.fillStyle = colour
         ctx.beginPath()
 
         ctx.moveTo(-arrowPoint,0)
@@ -115,28 +134,33 @@ var Ship = function () {
     ship.prototype.draw = function () {
 
         ctx.fillStyle = this.colour
-        ctx.fillRect(this.pixel_position[0], this.pixel_position[1], 38, 38)
+        ctx.fillRect(this.pixel_position[0], this.pixel_position[1], shipSize, shipSize)
         this.drawNumbers()
         this.drawArrows()
 
-        // ctx.fillStyle = 'rgba(0,255,0,0.5)'
-        // ctx.fillRect(this.pixel_position[0], this.pixel_position[1], 38, 38)
+
+        //highlight rectangles containing arrows (that are meant to detect clicks)
+        ctx.fillStyle ='rgba(0,255,0,0.5)'
+        ctx.fillRect(this.pixel_position[0] + (shipSize/2 - arrowSize), this.pixel_position[1] + paddingSize, arrowSize*2, arrowSize)
+        ctx.fillRect(this.pixel_position[0] + (shipSize/2 - arrowSize), this.pixel_position[1] + (shipSize - paddingSize - arrowSize), arrowSize*2, arrowSize)
+        ctx.fillRect(this.pixel_position[0] + paddingSize, this.pixel_position[1] + (shipSize/2 - arrowSize), arrowSize, arrowSize*2)
+        ctx.fillRect(this.pixel_position[0] + (shipSize - paddingSize - arrowSize) ,this.pixel_position[1] + (shipSize/2 - arrowSize), arrowSize, arrowSize*2)
 
     }
 
     ship.prototype.isArrow = function (x,y) {
 
-        if(Inputs.isInside(x,y,this.pixel_position[0] + 11,this.pixel_position[1] + 2,14,7)) {
-             return DirectionEnum.UP
+        if(Inputs.isInside(x,y,this.pixel_position[0] + (shipSize/2 - arrowSize), this.pixel_position[1] + paddingSize, arrowSize*2, arrowSize)) {
+            return DirectionEnum.UP
         }
-        else if(Inputs.isInside(x,y,this.pixel_position[0] + 11,this.pixel_position[1] + 29,14,7)) {
-             return DirectionEnum.DOWN
+        else if(Inputs.isInside(x,y,this.pixel_position[0] + (shipSize/2 - arrowSize), this.pixel_position[1] + (shipSize - paddingSize - arrowSize), arrowSize*2, arrowSize)) {
+            return DirectionEnum.DOWN
         }
-        else if(Inputs.isInside(x,y,this.pixel_position[0] + 2,this.pixel_position[1] + 11,7,14)) {
-             return DirectionEnum.LEFT
+        else if(Inputs.isInside(x,y,this.pixel_position[0] + paddingSize, this.pixel_position[1] + (shipSize/2 - arrowSize), arrowSize, arrowSize*2)) {
+            return DirectionEnum.LEFT
         }
-        else if(Inputs.isInside(x,y,this.pixel_position[0] + 29,this.pixel_position[1] + 11,7,14)) {
-             return DirectionEnum.RIGHT
+        else if(Inputs.isInside(x,y,this.pixel_position[0] + (shipSize - paddingSize - arrowSize) ,this.pixel_position[1] + (shipSize/2 - arrowSize), arrowSize, arrowSize*2)) {
+            return DirectionEnum.RIGHT
         } else {
             return DirectionEnum.NONE
         }
@@ -147,21 +171,34 @@ var Ship = function () {
         canvas.addEventListener('mousedown', function (e) {
 
             var i
-            for(i = 0; i < 1; i++) {    //1 should be 6, just testing
+            for(i = 0; i < ships.length; i++) {    //1 should be 6, just testing
                 var curr = ships[i]
-                if(Inputs.isInside(e.clientX, e.clientY, curr.pixel_position[0], curr.pixel_position[1], 38, 38)) {
-                    switch (curr.isArrow()) {
-                        case DirectionEnum.UP: console.log("UP"); break;
-                        case DirectionEnum.DOWN: console.log("DOWN"); break;
-                        case DirectionEnum.LEFT: console.log("LEFT"); break;
-                        case DirectionEnum.RIGHT: console.log("RIGHT"); break;
-                        case DirectionEnum.NONE: console.log("NONE"); break;
+                if(Inputs.isInside(e.clientX, e.clientY, curr.pixel_position[0], curr.pixel_position[1], shipSize, shipSize)) {
+                    switch (curr.isArrow(e.clientX, e.clientY)) {
+                       
+                        case DirectionEnum.UP: 
+                            console.log("UP"); 
+                            curr.move([curr.position[0], curr.position[1]-1]); 
+                            break;
+                        
+                        case DirectionEnum.DOWN: 
+                            console.log("DOWN"); 
+                            curr.move([curr.position[0], curr.position[1]+1]); 
+                            break;
+                        
+                        case DirectionEnum.LEFT: 
+                            console.log("LEFT"); 
+                            curr.move([curr.position[0]-1, curr.position[1]]); 
+                            break;
+                       
+                       case DirectionEnum.RIGHT: 
+                            console.log("RIGHT"); 
+                            curr.move([curr.position[0]+1, curr.position[1]]); 
+                            break;
+                        
+                        case DirectionEnum.NONE: 
+                            console.log("NONE");
                     }
-
-                    console.log("x: " + e.clientX + " y: " + e.clientY)
-                    console.log("x-bounds: " + curr.pixel_position[0] + "-" + (curr.pixel_position[0]+38))
-                    console.log("y-bounds: " + curr.pixel_position[1] + "-" + (curr.pixel_position[1]+38))
-
                 }
             }
         })
