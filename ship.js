@@ -27,7 +27,7 @@ var Ship = function () {
             //also test for centre tile spaces (planets)
             
             //need to find a way to redraw tile on move (or another way of erasing previous ship drawing)
-            Board.drawSpace(placeholder)
+            //Board.drawSpace(placeholder)
             //-----------------------------------
 
             this.position = position;

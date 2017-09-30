@@ -46,9 +46,9 @@ var Board = function () {
 
     var exports = {}
 
-    exports.drawSpace = function(tilePosition, spacePixelPosition) {
+    exports.drawSpace = function(colour, spacePixelPosition) {
 
-        ctx.fillStyle = tileColours[(tilePosition[0] + tilePosition[1])%2]
+        ctx.fillStyle = colour
         ctx.fillRect(spacePixelPosition[0], spacePixelPosition[1], spaceSize, spaceSize)
     
     }
@@ -68,7 +68,8 @@ var Board = function () {
                     var spacePosition = [tilePixelPosition[0] + i, tilePixelPosition[1] + j]
                     var spacePixelPosition = [tilePixelPosition[0] + i*spaceSize, tilePixelPosition[1] + j*spaceSize]
 
-                    this.drawSpace([i,j], spacePixelPosition)
+                    var colour = tileColours[(tilePosition[0] + tilePosition[1])%2]
+                    this.drawSpace(colour, spacePixelPosition)
 
                 if((i+j)%2 === 1) {
 
