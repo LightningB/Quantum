@@ -15,8 +15,8 @@ var Ship = function () {
     }
 
     ship.prototype.calculate_pixel_position = function () {
-         this.pixel_position = [this.position[0]*spaceSize + 6 + tileSeparation*Math.floor(this.position[0]/3),
-                                    this.position[1]*spaceSize + 6 + tileSeparation*Math.floor(this.position[1]/3)]
+         this.pixel_position = [this.position[0]*squareSize + 6 + tileSeparation*Math.floor(this.position[0]/3),
+                                    this.position[1]*squareSize + 6 + tileSeparation*Math.floor(this.position[1]/3)]
     }
 
     ship.prototype.move = function (position) {

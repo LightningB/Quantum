@@ -13,7 +13,7 @@ var DirectionEnum = {
                         NONE:0
                     }
 
-var spaceSize = 50
+var squareSize = 50
 var tileSeparation = 10
 var innerSquarePadding = 1
 
@@ -39,6 +39,10 @@ $(document).ready(function(){
                     Ship.create('rgb(255,0,0)', [0,5], 4),
                     Ship.create('rgb(255,0,0)', [7,8], 6)*/
                 ]
+
+    var game = Game.create()
+    console.log("game created")
+    console.log(game.board)
    
 });
 
@@ -46,27 +50,24 @@ var Board = function () {
 
     var exports = {}
 
-    exports.drawSpace = function(colour, spacePixelPosition) {
+    exports.drawSpace = function(colour, position) {
 
         ctx.fillStyle = colour
-        ctx.fillRect(spacePixelPosition[0], spacePixelPosition[1], spaceSize, spaceSize)
+        ctx.fillRect(position[0], position[1], squareSize, squareSize)
     
     }
 
     exports.drawTile = function(tilePosition) {
 
-        var colours = ['rgb(30, 144, 255)', 'rgb(0, 191, 255)']
 
-        var i;
-        for(i = 0; i < 3; i++) {
+        for(var i = 0; i < 3; i++) {
 
-            var j;
-            for(j = 0; j < 3; j++) {
+            for(var j = 0; j < 3; j++) {
 
-                    var tilePixelPosition = [(spaceSize*3 /*tileWidth*/ + /*padding*/tileSeparation)*tilePosition[0], (spaceSize*3+tileSeparation)*tilePosition[1]]
+                    var tilePixelPosition = [(squareSize*3 /*tileWidth*/ + /*padding*/tileSeparation)*tilePosition[0], (squareSize*3+tileSeparation)*tilePosition[1]]
 
                     var spacePosition = [tilePixelPosition[0] + i, tilePixelPosition[1] + j]
-                    var spacePixelPosition = [tilePixelPosition[0] + i*spaceSize, tilePixelPosition[1] + j*spaceSize]
+                    var spacePixelPosition = [tilePixelPosition[0] + i*squareSize, tilePixelPosition[1] + j*squareSize]
 
                     var colour = tileColours[(tilePosition[0] + tilePosition[1])%2]
                     this.drawSpace(colour, spacePixelPosition)
@@ -79,7 +80,7 @@ var Board = function () {
 
                 } 
                 if(i === 1 && j === 1){
-                    this.drawImage('images/minimalist planet.jpg', tilePixelPosition[0]+i*spaceSize, tilePixelPosition[1]+j*spaceSize, 2, spaceSize, spaceSize)
+                    this.drawImage('images/minimalist planet.jpg', tilePixelPosition[0]+i*squareSize, tilePixelPosition[1]+j*squareSize, 2, squareSize, squareSize)
                 }
             }
         }
@@ -109,7 +110,7 @@ var Board = function () {
         for(i = 0; i < n; i++) {
             var j;
             for(j = 0; j < m; j++) {
-                //Board.drawTile((spaceSize*3 /*tileWidth*/ + /*padding*/tileSeparation)*i, (spaceSize*3+tileSeparation)*j)
+                //Board.drawTile((squareSize*3 /*tileWidth*/ + /*padding*/tileSeparation)*i, (squareSize*3+tileSeparation)*j)
                 Board.drawTile([i, j])
             }
         }
