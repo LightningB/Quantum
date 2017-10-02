@@ -1,17 +1,19 @@
 "use strict";
 
+var squareSize = 50
+var tileSeparation = 10
+var innerSquarePadding = 1
+
+var colours = ['rgb(30, 144, 255)', 'rgb(0, 191, 255)']
+
+var ship_pixel_padding = 6
+var arrowPoint = 17
+var arrowSize = 7
+var paddingSize = 2
+var shipSize = 38
+
 var Painter = function () {
 	var exports = {}
-
-
-	var squareSize = 50
-	var tileSeparation = 10
-	var innerSquarePadding = 1
-
-	var colours = ['rgb(30, 144, 255)', 'rgb(0, 191, 255)']
-
-	var ship_pixel_padding = 6
-
 
 
 	exports.drawSquare = function (position, orthogonal) {
@@ -40,13 +42,12 @@ var Painter = function () {
 		var pixelPosition = [(squareSize)*position[0] + Math.floor((position[0]/3))*tileSeparation,
 								(squareSize)*position[1] + Math.floor((position[1]/3))*tileSeparation]
 
-		var colour = tileColours[(position[0] + position[1])%2]
 
 		Painter.drawSquare(pixelPosition, Painter.isOrthogonal(position))
 
 	}
 
-	exports.getTileFromPosition = function (position) {
+	exports.getTileOriginFromPosition = function (position) {
 
 		var tileX = (position[0] - Math.floor(position[0]%squaresInTile))
 		var tileY = (position[1] - Math.floor(position[1]%squaresInTile))
@@ -95,10 +96,105 @@ var Painter = function () {
         img.src = image_src
     }
 
+
+    exports.drawNumbers = function (ship) {
+
+        ctx.save()
+        ctx.translate(ship.pixel_position[0] + 19 /*ship centre offset*/,
+            ship.pixel_position[1] + 19)
+
+        ctx.fillStyle = 'rgb(255,255,255)'
+        ctx.beginPath()
+
+        if(ship.type%2 === 1) {
+            ctx.arc(0, 0, 3, 0*Math.PI,2*Math.PI)
+
+            if(ship.type >= 3) {
+                ctx.arc(-9, 9, 3, 0*Math.PI,2*Math.PI)
+                ctx.arc(9, -9, 3, 0*Math.PI,2*Math.PI)
+                if(ship.type >= 5) {
+                    ctx.moveTo(-9,-9)
+                    ctx.arc(-9, -9, 3, 0*Math.PI,2*Math.PI)
+                    ctx.moveTo(9,9)
+                    ctx.arc(9, 9, 3, 0*Math.PI,2*Math.PI)
+
+                }
+            }
+        } else {
+          ctx.moveTo(-9, 9)
+          ctx.arc(-9, 9, 3, 0*Math.PI,2*Math.PI)
+          ctx.moveTo(9,-9)
+          ctx.arc(9,-9, 3, 0*Math.PI,2*Math.PI)
+
+          if(ship.type >= 4) {
+            ctx.moveTo(-9, -9)
+            ctx.arc(-9, -9, 3, 0*Math.PI,2*Math.PI)
+            ctx.moveTo(9,9)
+            ctx.arc(9,9, 3, 0*Math.PI,2*Math.PI)
+          }
+          if(ship.type === 6) {
+            ctx.moveTo(9, 0)
+            ctx.arc(9, 0, 3, 0*Math.PI,2*Math.PI)
+            ctx.moveTo(-9,0)
+            ctx.arc(-9, 0, 3, 0*Math.PI,2*Math.PI)
+          }
+
+        }
+
+        ctx.fill()
+        ctx.restore()
+    }
+
+    exports.drawArrows = function (ship, colour) {
+
+        ctx.save()
+        ctx.translate(ship.pixel_position[0] + 19 /*ship centre offset*/,
+            ship.pixel_position[1] + 19)
+
+        if(colour === undefined) { colour = 'rgba(0,0,0,0.5)'}
+
+        ctx.fillStyle = colour
+        ctx.beginPath()
+
+        ctx.moveTo(-arrowPoint,0)
+        ctx.lineTo(-(arrowPoint-arrowSize),arrowSize)
+        ctx.lineTo(-(arrowPoint-arrowSize),-arrowSize)
+        ctx.lineTo(-17,0)
+
+        ctx.moveTo(arrowPoint,0)
+        ctx.lineTo((arrowPoint-arrowSize),arrowSize)
+        ctx.lineTo((arrowPoint-arrowSize),-arrowSize)
+        ctx.lineTo(arrowPoint,0)
+
+        ctx.moveTo(0,-arrowPoint)
+        ctx.lineTo(arrowSize,-(arrowPoint-arrowSize))
+        ctx.lineTo(-arrowSize,-(arrowPoint-arrowSize))
+        ctx.lineTo(0,-arrowPoint)
+
+        ctx.moveTo(0,arrowPoint)
+        ctx.lineTo(arrowSize,(arrowPoint-arrowSize))
+        ctx.lineTo(-arrowSize,(arrowPoint-arrowSize))
+        ctx.lineTo(0,arrowPoint)
+
+
+        ctx.fill()
+        ctx.restore()
+    }
+
+
+    exports.drawShip = function (ship) {
+
+		ctx.fillStyle = ship.colour
+	    ctx.fillRect(ship.pixel_position[0], ship.pixel_position[1], shipSize, shipSize)
+	    Painter.drawNumbers(ship)
+	    Painter.drawArrows(ship)
+
+    }
+
 	exports.drawShips = function (game) {
 
 		for(var i = 0; i < game.ships.length; i++) {
-			game.ships[i].draw()
+			Painter.drawShip(game.ships[i])
 		}
 
 	}
@@ -119,8 +215,8 @@ var Painter = function () {
 
 	exports.isOrthogonal = function (position) {
 
-		var X = ((position[0] - Painter.getTileFromPosition(position)[0]))
-		var Y = ((position[1] - Painter.getTileFromPosition(position)[1]))
+		var X = ((position[0] - Painter.getTileOriginFromPosition(position)[0]))
+		var Y = ((position[1] - Painter.getTileOriginFromPosition(position)[1]))
 
 		return (Math.abs(X-Y) === 1)
 

@@ -12,13 +12,6 @@ var DirectionEnum = {
                         NONE:0
                     }
 
-var squareSize = 50
-var tileSeparation = 10
-var innerSquarePadding = 1
-
-var tileColours = ['rgb(30, 144, 255)', 'rgb(0, 191, 255)']
-
-
 $(document).ready(function(){
 
     canvas = document.getElementById("canvas");
@@ -69,22 +62,22 @@ var Inputs = function () {
 
                         case DirectionEnum.UP:
                             //console.log("UP");
-                            curr.move([curr.position[0], curr.position[1]-1]);
+                            game.moveShip(curr, [curr.position[0], curr.position[1]-1]);
                             break;
 
                         case DirectionEnum.DOWN:
                             //console.log("DOWN");
-                            curr.move([curr.position[0], curr.position[1]+1]);
+                            game.moveShip(curr, [curr.position[0], curr.position[1]+1]);
                             break;
 
                         case DirectionEnum.LEFT:
                             //console.log("LEFT");
-                            curr.move([curr.position[0]-1, curr.position[1]]);
+                            game.moveShip(curr, [curr.position[0]-1, curr.position[1]]);
                             break;
 
                        case DirectionEnum.RIGHT:
                             //console.log("RIGHT");
-                            curr.move([curr.position[0]+1, curr.position[1]]);
+                            game.moveShip(curr, [curr.position[0]+1, curr.position[1]]);
                             break;
 
                         case DirectionEnum.NONE:
@@ -97,4 +90,13 @@ var Inputs = function () {
     }
 
     return exports
+}();
+
+
+var Utilities = function () {
+
+    var exports = {}
+
+
+
 }();
