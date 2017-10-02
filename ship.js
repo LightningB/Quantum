@@ -21,14 +21,12 @@ var Ship = function () {
 
     ship.prototype.move = function (position) {
 
-        if(position[0] >= 0 && position[0] < 9 
+        if(position[0] >= 0 && position[0] < 9
                 && position[1] >= 0 && position[1] < 9) {
 
             //also test for centre tile spaces (planets)
             
-            //need to find a way to redraw tile on move (or another way of erasing previous ship drawing)
-            //Board.drawSpace(placeholder)
-            //-----------------------------------
+            Painter.drawSquareByBoardPosition(position)
 
             this.position = position;
             this.calculate_pixel_position()
@@ -102,7 +100,7 @@ var Ship = function () {
             this.pixel_position[1] + 19)
 
         if(colour === undefined) { colour = 'rgba(0,0,0,0.5)'}
-        
+
         ctx.fillStyle = colour
         ctx.beginPath()
 
@@ -175,28 +173,28 @@ var Ship = function () {
                 var curr = ships[i]
                 if(Inputs.isInside(e.clientX, e.clientY, curr.pixel_position[0], curr.pixel_position[1], shipSize, shipSize)) {
                     switch (curr.isArrow(e.clientX, e.clientY)) {
-                       
-                        case DirectionEnum.UP: 
-                            console.log("UP"); 
-                            curr.move([curr.position[0], curr.position[1]-1]); 
+
+                        case DirectionEnum.UP:
+                            console.log("UP");
+                            curr.move([curr.position[0], curr.position[1]-1]);
                             break;
-                        
-                        case DirectionEnum.DOWN: 
-                            console.log("DOWN"); 
-                            curr.move([curr.position[0], curr.position[1]+1]); 
+
+                        case DirectionEnum.DOWN:
+                            console.log("DOWN");
+                            curr.move([curr.position[0], curr.position[1]+1]);
                             break;
-                        
-                        case DirectionEnum.LEFT: 
-                            console.log("LEFT"); 
-                            curr.move([curr.position[0]-1, curr.position[1]]); 
+
+                        case DirectionEnum.LEFT:
+                            console.log("LEFT");
+                            curr.move([curr.position[0]-1, curr.position[1]]);
                             break;
-                       
-                       case DirectionEnum.RIGHT: 
-                            console.log("RIGHT"); 
-                            curr.move([curr.position[0]+1, curr.position[1]]); 
+
+                       case DirectionEnum.RIGHT:
+                            console.log("RIGHT");
+                            curr.move([curr.position[0]+1, curr.position[1]]);
                             break;
-                        
-                        case DirectionEnum.NONE: 
+
+                        case DirectionEnum.NONE:
                             console.log("NONE");
                     }
                 }
@@ -206,11 +204,11 @@ var Ship = function () {
 
     return {
         create: function (colour, position, type) {
-            
+
             var new_ship = new ship(colour, position, type);
             new_ship.draw()
             new_ship.initialiseArrows()
-            
+
             return new_ship
         }
     }

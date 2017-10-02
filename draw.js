@@ -14,10 +14,29 @@ var Painter = function () {
 
 
 
-	exports.drawSquare = function (position, colour) {
+	exports.drawSquare = function (position, colour, orthogonal) {
 
 		ctx.fillStyle = colour
         ctx.fillRect(position[0], position[1], squareSize, squareSize)
+
+		if(orthogonal) {
+
+			ctx.strokeStyle = 'rgb(255,255,255)'
+			ctx.lineWidth = 2
+			ctx.strokeRect(position[0] + 5, position[1] + 5, 40, 40)
+
+		}
+
+	}
+
+	exports.drawSquareByBoardPosition = function (position) {
+
+		var pixelPosition = [(squareSize)*position[0] + Math.floor((position[0]/3))*tileSeparation,
+								(squareSize)*position[1] + Math.floor((position[1]/3))*tileSeparation]
+
+		var colour = tileColours[(position[0] + position[1])%2]
+
+		Painter.drawSquare(pixelPosition, colour)
 
 	}
 
@@ -29,19 +48,12 @@ var Painter = function () {
 
 				var tilePixelPosition = [(squareSize*3 /*tileWidth*/ + /*padding*/tileSeparation)*position[0], (squareSize*3+tileSeparation)*position[1]]
 
-				var spacePosition = [tilePixelPosition[0] + i, tilePixelPosition[1] + j]
-				var spacePixelPosition = [tilePixelPosition[0] + i*squareSize, tilePixelPosition[1] + j*squareSize]
+				var squarePosition = [tilePixelPosition[0] + i, tilePixelPosition[1] + j]
+				var squarePixelPosition = [tilePixelPosition[0] + i*squareSize, tilePixelPosition[1] + j*squareSize]
 
                 var colour = tileColours[(position[0] + position[1])%2]
-                Painter.drawSquare(spacePixelPosition, colour)
+                Painter.drawSquare(squarePixelPosition, colour, (i+j)%2 === 1)
 
-                if((i+j)%2 === 1) {
-
-                    ctx.strokeStyle = 'rgb(255,255,255)'
-                    ctx.lineWidth = 2
-                    ctx.strokeRect(spacePixelPosition[0] + 5, spacePixelPosition[1] + 5, 40, 40)
-
-                }
                 if(i === 1 && j === 1){
                     Painter.drawImage('images/minimalist planet.jpg', tilePixelPosition[0]+i*squareSize, tilePixelPosition[1]+j*squareSize, 2, squareSize, squareSize)
                 }
