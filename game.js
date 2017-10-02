@@ -1,7 +1,8 @@
 "use strict";
 
-var Game = function () {
+var squaresInTile = 3
 
+var Game = function () {
 
 	var ShipEnum = {
                         RED:'rgb(255,0,0)',
@@ -11,19 +12,18 @@ var Game = function () {
                         EMPTY:'rgba(0,0,0,0)'
                     }
 
-	var game = function () {
+	var game = function (N, M) {
 
-		this.board = this.createBoard(3,3)
+		this.board = this.createBoard(N, M)
 		this.ships = []
 
 	}
 
 	game.prototype.convertPosToPixelPos = function(position) {
-		return [position[0]*squareSize + tileSeparation*Math.floor(this.position[0]/3), 
+		return [position[0]*squareSize + tileSeparation*Math.floor(this.position[0]/3),
 					position[1]*squareSize + tileSeparation*Math.floor(this.position[1]/3)]
 	}
 
-	//0 is empty, 
 	game.prototype.createBoard = function (N,M) {
 
 		var board = []
@@ -53,28 +53,31 @@ var Game = function () {
 
 				var tile = tileRow[j]
 
-			
+
 			}
 		}
 	}
 
-	game.drawTile = function (position) {
-		var pixel_position = convertPosToPixelPos(position)
-		Painter.drawTile(pixel_position)
-	}
+	// game.prototype.drawTile = function (position) {
+	// 	var pixel_position = convertPosToPixelPos(position)
+	// 	Painter.drawTile(pixel_position)
+	// }
 
-	game.drawShip = function (position) {
-		var pixel_position = convertPosToPixelPos(position)
-		Painter.drawShip(pixel_position)
+	game.prototype.addShips = function (ships) {
+
+		for(var i = 0; i < ships.length; i++) {
+			this.ships.push(ships[i])
+		}
+
 	}
 
 
 
 	 return {
-        create: function () {
-            
-            return new game();
-            
+        create: function (N, M) {
+
+            return new game(N, M);
+
         }
     }
 

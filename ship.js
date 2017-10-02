@@ -25,15 +25,13 @@ var Ship = function () {
                 && position[1] >= 0 && position[1] < 9) {
 
             //also test for centre tile spaces (planets)
-            
-            Painter.drawSquareByBoardPosition(position)
+
+            Painter.drawSquareByBoardPosition(this.position)
 
             this.position = position;
             this.calculate_pixel_position()
             this.draw()
 
-            console.log(this.position)
-            console.log(this.pixel_position)
         }
 
     }
@@ -136,14 +134,6 @@ var Ship = function () {
         this.drawNumbers()
         this.drawArrows()
 
-
-        //highlight rectangles containing arrows (that are meant to detect clicks)
-        ctx.fillStyle ='rgba(0,255,0,0.5)'
-        ctx.fillRect(this.pixel_position[0] + (shipSize/2 - arrowSize), this.pixel_position[1] + paddingSize, arrowSize*2, arrowSize)
-        ctx.fillRect(this.pixel_position[0] + (shipSize/2 - arrowSize), this.pixel_position[1] + (shipSize - paddingSize - arrowSize), arrowSize*2, arrowSize)
-        ctx.fillRect(this.pixel_position[0] + paddingSize, this.pixel_position[1] + (shipSize/2 - arrowSize), arrowSize, arrowSize*2)
-        ctx.fillRect(this.pixel_position[0] + (shipSize - paddingSize - arrowSize) ,this.pixel_position[1] + (shipSize/2 - arrowSize), arrowSize, arrowSize*2)
-
     }
 
     ship.prototype.isArrow = function (x,y) {
@@ -164,52 +154,12 @@ var Ship = function () {
         }
     }
 
-    ship.prototype.initialiseArrows = function () {
-
-        canvas.addEventListener('mousedown', function (e) {
-
-            var i
-            for(i = 0; i < ships.length; i++) {    //1 should be 6, just testing
-                var curr = ships[i]
-                if(Inputs.isInside(e.clientX, e.clientY, curr.pixel_position[0], curr.pixel_position[1], shipSize, shipSize)) {
-                    switch (curr.isArrow(e.clientX, e.clientY)) {
-
-                        case DirectionEnum.UP:
-                            console.log("UP");
-                            curr.move([curr.position[0], curr.position[1]-1]);
-                            break;
-
-                        case DirectionEnum.DOWN:
-                            console.log("DOWN");
-                            curr.move([curr.position[0], curr.position[1]+1]);
-                            break;
-
-                        case DirectionEnum.LEFT:
-                            console.log("LEFT");
-                            curr.move([curr.position[0]-1, curr.position[1]]);
-                            break;
-
-                       case DirectionEnum.RIGHT:
-                            console.log("RIGHT");
-                            curr.move([curr.position[0]+1, curr.position[1]]);
-                            break;
-
-                        case DirectionEnum.NONE:
-                            console.log("NONE");
-                    }
-                }
-            }
-        })
-    }
 
     return {
         create: function (colour, position, type) {
 
-            var new_ship = new ship(colour, position, type);
-            new_ship.draw()
-            new_ship.initialiseArrows()
+            return new ship(colour, position, type);
 
-            return new_ship
         }
     }
 }();
