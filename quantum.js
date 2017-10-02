@@ -29,7 +29,7 @@ $(document).ready(function(){
     canvas.height = document.documentElement.clientHeight
 
 
-    Board.drawBoard(3,3)
+    Painter.drawBoard(3,3)
 
     ships = [
                     Ship.create('rgb(255,0,0)', [0,0], 5),
@@ -43,7 +43,7 @@ $(document).ready(function(){
     var game = Game.create()
     console.log("game created")
     console.log(game.board)
-   
+
 });
 
 var Board = function () {
@@ -54,7 +54,7 @@ var Board = function () {
 
         ctx.fillStyle = colour
         ctx.fillRect(position[0], position[1], squareSize, squareSize)
-    
+
     }
 
     exports.drawTile = function(tilePosition) {
@@ -78,7 +78,7 @@ var Board = function () {
                     ctx.lineWidth = 2
                     ctx.strokeRect(spacePixelPosition[0] + 5, spacePixelPosition[1] + 5, 40, 40)
 
-                } 
+                }
                 if(i === 1 && j === 1){
                     this.drawImage('images/minimalist planet.jpg', tilePixelPosition[0]+i*squareSize, tilePixelPosition[1]+j*squareSize, 2, squareSize, squareSize)
                 }
@@ -91,13 +91,13 @@ var Board = function () {
         img.onload = function() {
             //            imageObj, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight
             ctx.drawImage(
-                img, 
-                (img.naturalWidth - img.naturalWidth/divisor)/2, 
-                (img.naturalHeight - img.naturalHeight/divisor)/2, 
-                img.naturalWidth/divisor, 
-                img.naturalHeight/divisor, 
-                X, 
-                Y, 
+                img,
+                (img.naturalWidth - img.naturalWidth/divisor)/2,
+                (img.naturalHeight - img.naturalHeight/divisor)/2,
+                img.naturalWidth/divisor,
+                img.naturalHeight/divisor,
+                X,
+                Y,
                 scaleX,
                 scaleY)
 
