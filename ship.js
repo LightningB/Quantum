@@ -40,24 +40,6 @@ var Ship = function () {
         return Math.floor((Math.random() * 6) + 1);
     }
 
-    ship.prototype.isArrow = function (x,y) {
-
-        if(Inputs.isInside(x,y,this.pixel_position[0] + (shipSize/2 - arrowSize), this.pixel_position[1] + paddingSize, arrowSize*2, arrowSize)) {
-            return DirectionEnum.UP
-        }
-        else if(Inputs.isInside(x,y,this.pixel_position[0] + (shipSize/2 - arrowSize), this.pixel_position[1] + (shipSize - paddingSize - arrowSize), arrowSize*2, arrowSize)) {
-            return DirectionEnum.DOWN
-        }
-        else if(Inputs.isInside(x,y,this.pixel_position[0] + paddingSize, this.pixel_position[1] + (shipSize/2 - arrowSize), arrowSize, arrowSize*2)) {
-            return DirectionEnum.LEFT
-        }
-        else if(Inputs.isInside(x,y,this.pixel_position[0] + (shipSize - paddingSize - arrowSize) ,this.pixel_position[1] + (shipSize/2 - arrowSize), arrowSize, arrowSize*2)) {
-            return DirectionEnum.RIGHT
-        } else {
-            return DirectionEnum.NONE
-        }
-    }
-
 
     return {
         create: function (colour, position, type) {

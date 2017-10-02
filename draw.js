@@ -1,16 +1,16 @@
 "use strict";
 
-var squareSize = 50
-var tileSeparation = 10
-var innerSquarePadding = 1
+var squareSize = 100
+var tileSeparation = squareSize/5
+var innerSquareSize = 4/5 * squareSize
 
 var colours = ['rgb(30, 144, 255)', 'rgb(0, 191, 255)']
 
-var ship_pixel_padding = 6
-var arrowPoint = 17
-var arrowSize = 7
-var paddingSize = 2
-var shipSize = 38
+var arrowPoint = squareSize/3
+var arrowSize = squareSize/7
+var shipSize = innerSquareSize - (2*squareSize/50)
+var numberSeparation = squareSize/5
+
 
 var Painter = function () {
 	var exports = {}
@@ -25,7 +25,7 @@ var Painter = function () {
 
 			ctx.strokeStyle = 'rgb(255,255,255)'
 			ctx.lineWidth = 2
-			ctx.strokeRect(position[0] + 5, position[1] + 5, 40, 40)
+			ctx.strokeRect(position[0] + (squareSize - innerSquareSize)/2, position[1] + (squareSize - innerSquareSize)/2, innerSquareSize, innerSquareSize)
 
 		} else {
 
@@ -99,44 +99,48 @@ var Painter = function () {
 
     exports.drawNumbers = function (ship) {
 
+    	var pixel_position = Inputs.calculateShipPixelPosition(ship)
+    	
         ctx.save()
-        ctx.translate(ship.pixel_position[0] + 19 /*ship centre offset*/,
-            ship.pixel_position[1] + 19)
+        ctx.translate(pixel_position[0] + shipSize/2 /*ship centre offset*/,
+            pixel_position[1] + shipSize/2)
 
         ctx.fillStyle = 'rgb(255,255,255)'
         ctx.beginPath()
 
         if(ship.type%2 === 1) {
-            ctx.arc(0, 0, 3, 0*Math.PI,2*Math.PI)
+            ctx.arc(0, 0, numberSeparation/3, 0*Math.PI,2*Math.PI)
 
             if(ship.type >= 3) {
-                ctx.arc(-9, 9, 3, 0*Math.PI,2*Math.PI)
-                ctx.arc(9, -9, 3, 0*Math.PI,2*Math.PI)
+            	ctx.moveTo(-numberSeparation, numberSeparation)
+                ctx.arc(-numberSeparation, numberSeparation, numberSeparation/3, 0*Math.PI,2*Math.PI)
+                ctx.moveTo(numberSeparation, -numberSeparation)
+                ctx.arc(numberSeparation, -numberSeparation, numberSeparation/3, 0*Math.PI,2*Math.PI)
                 if(ship.type >= 5) {
-                    ctx.moveTo(-9,-9)
-                    ctx.arc(-9, -9, 3, 0*Math.PI,2*Math.PI)
-                    ctx.moveTo(9,9)
-                    ctx.arc(9, 9, 3, 0*Math.PI,2*Math.PI)
+                    ctx.moveTo(-numberSeparation,-numberSeparation)
+                    ctx.arc(-numberSeparation, -numberSeparation, numberSeparation/3, 0*Math.PI,2*Math.PI)
+                    ctx.moveTo(numberSeparation,numberSeparation)
+                    ctx.arc(numberSeparation, numberSeparation, numberSeparation/3, 0*Math.PI,2*Math.PI)
 
                 }
             }
         } else {
-          ctx.moveTo(-9, 9)
-          ctx.arc(-9, 9, 3, 0*Math.PI,2*Math.PI)
-          ctx.moveTo(9,-9)
-          ctx.arc(9,-9, 3, 0*Math.PI,2*Math.PI)
+          ctx.moveTo(-numberSeparation, numberSeparation)
+          ctx.arc(-numberSeparation, numberSeparation, numberSeparation/3, 0*Math.PI,2*Math.PI)
+          ctx.moveTo(numberSeparation,-numberSeparation)
+          ctx.arc(numberSeparation,-numberSeparation, numberSeparation/3, 0*Math.PI,2*Math.PI)
 
           if(ship.type >= 4) {
-            ctx.moveTo(-9, -9)
-            ctx.arc(-9, -9, 3, 0*Math.PI,2*Math.PI)
-            ctx.moveTo(9,9)
-            ctx.arc(9,9, 3, 0*Math.PI,2*Math.PI)
+            ctx.moveTo(-numberSeparation, -numberSeparation)
+            ctx.arc(-numberSeparation, -numberSeparation, numberSeparation/3, 0*Math.PI,2*Math.PI)
+            ctx.moveTo(numberSeparation,numberSeparation)
+            ctx.arc(numberSeparation,numberSeparation, numberSeparation/3, 0*Math.PI,2*Math.PI)
           }
           if(ship.type === 6) {
-            ctx.moveTo(9, 0)
-            ctx.arc(9, 0, 3, 0*Math.PI,2*Math.PI)
-            ctx.moveTo(-9,0)
-            ctx.arc(-9, 0, 3, 0*Math.PI,2*Math.PI)
+            ctx.moveTo(numberSeparation, 0)
+            ctx.arc(numberSeparation, 0, numberSeparation/3, 0*Math.PI,2*Math.PI)
+            ctx.moveTo(-numberSeparation,0)
+            ctx.arc(-numberSeparation, 0, numberSeparation/3, 0*Math.PI,2*Math.PI)
           }
 
         }
@@ -147,9 +151,11 @@ var Painter = function () {
 
     exports.drawArrows = function (ship, colour) {
 
+    	var pixel_position = Inputs.calculateShipPixelPosition(ship)
+
         ctx.save()
-        ctx.translate(ship.pixel_position[0] + 19 /*ship centre offset*/,
-            ship.pixel_position[1] + 19)
+        ctx.translate(pixel_position[0] + shipSize/2 /*ship centre offset*/,
+            pixel_position[1] + shipSize/2)
 
         if(colour === undefined) { colour = 'rgba(0,0,0,0.5)'}
 
@@ -159,7 +165,7 @@ var Painter = function () {
         ctx.moveTo(-arrowPoint,0)
         ctx.lineTo(-(arrowPoint-arrowSize),arrowSize)
         ctx.lineTo(-(arrowPoint-arrowSize),-arrowSize)
-        ctx.lineTo(-17,0)
+        ctx.lineTo(-arrowPoint,0)
 
         ctx.moveTo(arrowPoint,0)
         ctx.lineTo((arrowPoint-arrowSize),arrowSize)
@@ -184,8 +190,11 @@ var Painter = function () {
 
     exports.drawShip = function (ship) {
 
+    	var pixel_position = Inputs.calculateShipPixelPosition(ship)
+
 		ctx.fillStyle = ship.colour
-	    ctx.fillRect(ship.pixel_position[0], ship.pixel_position[1], shipSize, shipSize)
+	    ctx.fillRect(pixel_position[0], pixel_position[1], shipSize, shipSize)
+	    
 	    Painter.drawNumbers(ship)
 	    Painter.drawArrows(ship)
 

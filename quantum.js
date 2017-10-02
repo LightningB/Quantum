@@ -19,14 +19,13 @@ $(document).ready(function(){
 
 
     var game = Game.create(3, 3)
-    console.log("game created")
     console.log(game.board)
 
     game.addShips([
                     Ship.create('rgb(255,0,0)', [0,0], 5),
                     Ship.create('rgb(255,0,0)', [4,5], 3),
-                    Ship.create('rgb(255,0,0)', [3,2], 1),
-                    Ship.create('rgb(255,0,0)', [2,1], 2),
+                    Ship.create('rgb(255,0,0)', [5,2], 1),
+                    Ship.create('rgb(255,0,0)', [2,7], 2),
                     Ship.create('rgb(255,0,0)', [0,5], 4),
                     Ship.create('rgb(255,0,0)', [7,8], 6)
                 ])
@@ -57,36 +56,63 @@ var Inputs = function () {
             var i
             for(i = 0; i < game.ships.length; i++) {    //1 should be 6, just testing
                 var curr = game.ships[i]
-                if(Inputs.isInside(e.clientX, e.clientY, curr.pixel_position[0], curr.pixel_position[1], 38, 38)) {
-                    switch (curr.isArrow(e.clientX, e.clientY)) {
+
+                var pixel_position = Inputs.calculateShipPixelPosition(curr)
+
+                if(Inputs.isInside(e.clientX, e.clientY, pixel_position[0], pixel_position[1], shipSize, shipSize)) {
+                    switch (Inputs.isArrow(e.clientX, e.clientY, curr)) {
 
                         case DirectionEnum.UP:
-                            //console.log("UP");
                             game.moveShip(curr, [curr.position[0], curr.position[1]-1]);
                             break;
 
                         case DirectionEnum.DOWN:
-                            //console.log("DOWN");
                             game.moveShip(curr, [curr.position[0], curr.position[1]+1]);
                             break;
 
                         case DirectionEnum.LEFT:
-                            //console.log("LEFT");
                             game.moveShip(curr, [curr.position[0]-1, curr.position[1]]);
                             break;
 
                        case DirectionEnum.RIGHT:
-                            //console.log("RIGHT");
                             game.moveShip(curr, [curr.position[0]+1, curr.position[1]]);
                             break;
 
                         case DirectionEnum.NONE:
-                            //console.log("NONE");
                     }
                 }
             }
         })
 
+    }
+
+    exports.isArrow = function (x,y, ship) {
+
+        var pixel_position = Inputs.calculateShipPixelPosition(ship)
+
+        var arrowPadding = (shipSize)/2 - arrowPoint
+
+        if(Inputs.isInside(x,y - arrowPadding,pixel_position[0] + (shipSize/2 - arrowSize), pixel_position[1], arrowSize*2, arrowSize)) {
+            return DirectionEnum.UP
+        }
+        else if(Inputs.isInside(x,y + arrowPadding,pixel_position[0] + (shipSize/2 - arrowSize), pixel_position[1] + (shipSize - arrowSize), arrowSize*2, arrowSize)) {
+            return DirectionEnum.DOWN
+        }
+        else if(Inputs.isInside(x - arrowPadding,y,pixel_position[0], pixel_position[1] + (shipSize/2 - arrowSize), arrowSize, arrowSize*2)) {
+            return DirectionEnum.LEFT
+        }
+        else if(Inputs.isInside(x + arrowPadding,y,pixel_position[0] + (shipSize - arrowSize) ,pixel_position[1] + (shipSize/2 - arrowSize), arrowSize, arrowSize*2)) {
+            return DirectionEnum.RIGHT
+        } else {
+            return DirectionEnum.NONE
+        }
+    }
+
+    exports.calculateShipPixelPosition = function (ship) {
+
+        return [ship.position[0]*squareSize + (squareSize - innerSquareSize)/2 + squareSize/50 + tileSeparation*Math.floor(ship.position[0]/3),
+                                    ship.position[1]*squareSize + (squareSize - innerSquareSize)/2 + squareSize/50 + tileSeparation*Math.floor(ship.position[1]/3)]
+    
     }
 
     return exports
