@@ -99,7 +99,7 @@ var Painter = function () {
 
     exports.drawNumbers = function (ship) {
 
-    	var pixel_position = Inputs.calculateShipPixelPosition(ship)
+    	var pixel_position = Utilities.calculateShipPixelPosition(ship)
     	
         ctx.save()
         ctx.translate(pixel_position[0] + shipSize/2 /*ship centre offset*/,
@@ -151,7 +151,7 @@ var Painter = function () {
 
     exports.drawArrows = function (ship, colour) {
 
-    	var pixel_position = Inputs.calculateShipPixelPosition(ship)
+    	var pixel_position = Utilities.calculateShipPixelPosition(ship)
 
         ctx.save()
         ctx.translate(pixel_position[0] + shipSize/2 /*ship centre offset*/,
@@ -190,7 +190,7 @@ var Painter = function () {
 
     exports.drawShip = function (ship) {
 
-    	var pixel_position = Inputs.calculateShipPixelPosition(ship)
+    	var pixel_position = Utilities.calculateShipPixelPosition(ship)
 
 		ctx.fillStyle = ship.colour
 	    ctx.fillRect(pixel_position[0], pixel_position[1], shipSize, shipSize)
