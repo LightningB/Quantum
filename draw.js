@@ -1,6 +1,6 @@
 "use strict";
 
-var squareSize = 100
+var squareSize = 50
 var tileSeparation = squareSize/5
 var innerSquareSize = 4/5 * squareSize
 
