@@ -14,32 +14,37 @@ var Inputs = function () {
 
         canvas.addEventListener('mousedown', function (e) {
 
-            var i
-            for(i = 0; i < game.ships.length; i++) {    //1 should be 6, just testing
-                var curr = game.ships[i]
+            for(var i = 0; i < game.players.length; i++) {
+                
+                var player = game.players[i]
+                
+                for(var j = 0; j < player.ships.length; j++) {
 
-                var pixel_position = Utilities.calculateShipPixelPosition(curr)
+                    var curr = player.ships[j]
 
-                if(Inputs.isInside(e.clientX, e.clientY, pixel_position[0], pixel_position[1], shipSize, shipSize)) {
-                    switch (Inputs.isArrow(e.clientX, e.clientY, curr)) {
+                    var pixel_position = Utilities.calculateShipPixelPosition(curr)
 
-                        case DirectionEnum.UP:
-                            game.moveShip(curr, [curr.position[0], curr.position[1]-1]);
-                            break;
+                    if(Inputs.isInside(e.clientX, e.clientY, pixel_position[0], pixel_position[1], shipSize, shipSize)) {
+                        switch (Inputs.isArrow(e.clientX, e.clientY, curr)) {
 
-                        case DirectionEnum.DOWN:
-                            game.moveShip(curr, [curr.position[0], curr.position[1]+1]);
-                            break;
+                            case DirectionEnum.UP:
+                                game.moveShip(curr, [curr.position[0], curr.position[1]-1]);
+                                break;
 
-                        case DirectionEnum.LEFT:
-                            game.moveShip(curr, [curr.position[0]-1, curr.position[1]]);
-                            break;
+                            case DirectionEnum.DOWN:
+                                game.moveShip(curr, [curr.position[0], curr.position[1]+1]);
+                                break;
 
-                       case DirectionEnum.RIGHT:
-                            game.moveShip(curr, [curr.position[0]+1, curr.position[1]]);
-                            break;
+                            case DirectionEnum.LEFT:
+                                game.moveShip(curr, [curr.position[0]-1, curr.position[1]]);
+                                break;
 
-                        case DirectionEnum.NONE:
+                           case DirectionEnum.RIGHT:
+                                game.moveShip(curr, [curr.position[0]+1, curr.position[1]]);
+                                break;
+
+                            case DirectionEnum.NONE:
+                        }
                     }
                 }
             }

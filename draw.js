@@ -206,6 +206,20 @@ var Painter = function () {
 			Painter.drawShip(game.ships[i])
 		}
 
+
+        console.log("here")
+        for(var k = 0; k < game.players.length; k++) {
+
+           var player = game.players[k]
+
+           for(var j = 0; j < player.ships.length; j++) {
+
+                console.log("drawing player ship")
+                Painter.drawShip(player.ships[j])
+
+           }
+        }
+
 	}
 
 	exports.drawBoard = function (game) {

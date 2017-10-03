@@ -2,12 +2,15 @@
 
 var Player = function () {
 
-    var player = function (game, name) {
+    var player = function (game, name, colour) {
 
-        this.name = name != undefined ? setName(name) : "Player";
-        this.ships = {}
+       (name != undefined) ? this.setName(name) : "Player";
+        this.ships = []
         this.game = game
+        this.colour = colour
     }
+
+
 
     player.prototype.setName = function (name) {
 
@@ -21,9 +24,27 @@ var Player = function () {
 
     }
 
+    player.prototype.createShip = function (position, type) {
+
+        return Ship.create(this.colour, position, type)
+
+    }
+
+    player.prototype.addShips = function (ships) {
+
+        for(var i = 0; i < ships.length; i++) {
+
+            this.ships.push(ships[i])
+
+        }
+
+    }
+
+
+
     return {
-        create: function () {
-            return new player();
+        create: function (game, name, colour) {
+            return new player(game, name, colour);
         }
     }
 }();
