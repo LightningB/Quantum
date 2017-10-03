@@ -11,7 +11,6 @@ var Game = function () {
 		this.board = this.createBoard(N, M)
 
 		this.players = []
-		this.ships = []
 
 		//Painter.drawBoard(this)
 
@@ -34,16 +33,6 @@ var Game = function () {
 		}
 
 		return board
-	}
-
-
-	// deprecated
-	game.prototype.addShips = function (ships) {
-
-		for(var i = 0; i < ships.length; i++) {
-			this.ships.push(ships[i])
-		}
-
 	}
 
 	game.prototype.addPlayer = function (player) {

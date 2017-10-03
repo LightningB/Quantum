@@ -2,10 +2,11 @@
 
 var Tile = function () {
 
-	var tile = function (position) {
+	var tile = function (position, planetImage) {
 
 		this.position = position
 		this.squares = this.createSquares()
+		this.planetImage = (planetImage != undefined) ? planetImage : 'images/minimalist planet.jpg';
 
 	}
 
